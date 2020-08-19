@@ -11,7 +11,7 @@ import traceback
 class ShowAnchorCloud(ReporterPlugin):
     @objc.python_method
     def settings(self):
-        self.name = "Show Anchor Cloud"
+        self.menuName = "Show Anchor Cloud"
         self.skipMark = {}
 
     @objc.python_method
