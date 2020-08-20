@@ -14,6 +14,7 @@ class ShowAnchorCloud(ReporterPlugin):
         self.name = "Show Anchor Cloud"
         self.skipMark = {}
 
+    @objc.python_method
     def matchingGlyphsAndAnchorsForAnchor(self, layer, anchor):
         anchorRoot = "_" + anchor.name
         font = layer.parent.parent
@@ -44,7 +45,7 @@ class ShowAnchorCloud(ReporterPlugin):
                     {
                         "name": "Show " + l2.parent.name,
                         "state": state,
-                        "action": self.sayHello
+                        "action": self.sayHello_
                         # "action": objc.selector(
                         #     lambda (self, sender): self.toggle(l2.parent.name)
                         # ),
@@ -52,7 +53,7 @@ class ShowAnchorCloud(ReporterPlugin):
                 )
         return items
 
-    def sayHello(self, sender):
+    def sayHello_(self, sender):
         name = sender.title()[5:]
         print(name)
         if name in self.skipMark:
@@ -63,7 +64,7 @@ class ShowAnchorCloud(ReporterPlugin):
     @objc.python_method
     def background(self, layer):
         selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
-        if len(selectedAnchors) == 0:
+        if not selectedAnchors:
             return
         try:
             NSColor.colorWithDeviceRed_green_blue_alpha_(0.2, 0.2, 0.2, 0.5).set()
