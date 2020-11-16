@@ -11,6 +11,7 @@ import traceback
 class ShowAnchorCloud(ReporterPlugin):
     @objc.python_method
     def settings(self):
+        self.name = "Show Anchor Cloud"
         self.menuName = "Show Anchor Cloud"
         self.skipMark = {}
 
@@ -79,7 +80,7 @@ class ShowAnchorCloud(ReporterPlugin):
                         a.position.y - otherAnchor.position.y,
                     )
                     bez = NSBezierPath.bezierPath()
-                    bez.appendBezierPath_(l2.bezierPath)
+                    bez.appendBezierPath_(l2.completeBezierPath)
 
                     t = NSAffineTransform.transform()
                     t.translateXBy_yBy_(anchorAnchorPos.x, anchorAnchorPos.y)
