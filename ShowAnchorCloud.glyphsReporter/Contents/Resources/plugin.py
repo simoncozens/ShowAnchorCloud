@@ -52,7 +52,20 @@ class ShowAnchorCloud(ReporterPlugin):
                         # ),
                     }
                 )
+        items.append(
+            {
+                "name": "Clear all anchors",
+                "action": self.clearAll_
+            }
+        )
         return items
+
+    def clearAll_(self, sender):
+        layer = Glyphs.font.selectedLayers[0]
+        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
+        for a in selectedAnchors:
+            for (l2, otherAnchor) in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
+                self.skipMark[l2.parent.name] = True
 
     def sayHello_(self, sender):
         name = sender.title()[5:]
