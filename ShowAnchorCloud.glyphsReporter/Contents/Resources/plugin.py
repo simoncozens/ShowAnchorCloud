@@ -17,7 +17,12 @@ class ShowAnchorCloud(ReporterPlugin):
 
     @objc.python_method
     def matchingGlyphsAndAnchorsForAnchor(self, layer, anchor):
-        anchorRoot = "_" + anchor.name
+        anchorName = anchor.name
+        if anchorName.startswith("_"):
+            return []
+        if "_" in anchorName:
+            anchorName = anchorName.split("_")[0]
+        anchorRoot = "_" + anchorName
         font = layer.parent.parent
         allglyphs = font.glyphs
         glyphs = []
