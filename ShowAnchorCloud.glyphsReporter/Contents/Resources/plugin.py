@@ -3,8 +3,8 @@ from __future__ import division, print_function, unicode_literals
 import objc
 from GlyphsApp import *
 from GlyphsApp.plugins import *
-from Foundation import NSPoint, NSMakePoint
-from AppKit import NSView, NSColor, NSRectFill, NSBezierPath, NSAffineTransform
+from Foundation import NSPoint
+from AppKit import NSColor, NSBezierPath, NSAffineTransform
 import traceback
 
 
