@@ -22,6 +22,10 @@ class ShowAnchorCloud(ReporterPlugin):
             return []
         if "_" in anchorName:
             anchorName = anchorName.split("_")[0]
+        if anchorName.startswith("*"):
+            anchorName = anchorName[1:]
+            if "." in anchorName:
+                anchorName = anchorName.split(".")[0]
         anchorRoot = "_" + anchorName
         font = layer.parent.parent
         allglyphs = font.glyphs
