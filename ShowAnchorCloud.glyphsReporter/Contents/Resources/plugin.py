@@ -18,12 +18,16 @@ class ShowAnchorCloud(ReporterPlugin):
     @objc.python_method
     def matchingGlyphsAndAnchorsForAnchor(self, layer, anchor):
         anchorName = anchor.name
+		# Skip mark anchors
         if anchorName.startswith("_"):
             return []
+		# If it is a ligature anchor, remove the suffix
         if "_" in anchorName:
             anchorName = anchorName.split("_")[0]
+		# If it is a contextual anchor, remove the astrisk
         if anchorName.startswith("*"):
             anchorName = anchorName[1:]
+			# If it has a suffix, remove it
             if "." in anchorName:
                 anchorName = anchorName.split(".")[0]
         anchorRoot = "_" + anchorName
