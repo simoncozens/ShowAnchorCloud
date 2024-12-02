@@ -109,3 +109,6 @@ class ShowAnchorCloud(ReporterPlugin):
         except:
             print("Oops!", sys.exc_info()[0], "occured.")
             traceback.print_exc(file=sys.stdout)
+
+    def shouldDrawAccentCloudForLayer_(self, layer):
+        return layer != self.activeLayer()
