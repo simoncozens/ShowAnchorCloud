@@ -89,7 +89,7 @@ class ShowAnchorCloud(ReporterPlugin):
         if not selectedAnchors:
             return
         try:
-            NSColor.colorWithDeviceRed_green_blue_alpha_(0.2, 0.2, 0.2, 0.5).set()
+            NSColor.colorWithDeviceWhite_alpha_(0, 0.2).set()
             for a in selectedAnchors:
                 for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
                     if l2.parent.name in self.skipMark:
