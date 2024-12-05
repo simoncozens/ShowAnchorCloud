@@ -75,6 +75,7 @@ class ShowAnchorCloud(ReporterPlugin):
         for a in selectedAnchors:
             for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
                 self.skipMark[l2.parent.name] = True
+        Glyphs.redraw()
 
     def showAll_(self, sender):
         layer = self.activeLayer()
@@ -82,14 +83,15 @@ class ShowAnchorCloud(ReporterPlugin):
         for a in selectedAnchors:
             for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
                 del self.skipMark[l2.parent.name]
+        Glyphs.redraw()
 
     def sayHello_(self, sender):
         name = sender.title()[5:]
-        print(name)
         if name in self.skipMark:
             del self.skipMark[name]
         else:
             self.skipMark[name] = True
+        Glyphs.redraw()
 
     @objc.python_method
     def background(self, layer):
