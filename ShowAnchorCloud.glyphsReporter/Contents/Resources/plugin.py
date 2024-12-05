@@ -65,7 +65,7 @@ class ShowAnchorCloud(ReporterPlugin):
                         # ),
                     }
                 )
-        items.append({"name": "Clear all anchors", "action": self.clearAll_})
+        items.append({"name": "Clear all marks", "action": self.clearAll_})
         return items
 
     def clearAll_(self, sender):
