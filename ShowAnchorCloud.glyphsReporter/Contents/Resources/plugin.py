@@ -59,7 +59,7 @@ class ShowAnchorCloud(ReporterPlugin):
                     {
                         "name": "Show " + l2.parent.name,
                         "state": state,
-                        "action": self.sayHello_,
+                        "action": self.toggleMark_,
                         # "action": objc.selector(
                         #     lambda (self, sender): self.toggle(l2.parent.name)
                         # ),
@@ -85,7 +85,7 @@ class ShowAnchorCloud(ReporterPlugin):
                 del self.skipMark[l2.parent.name]
         Glyphs.redraw()
 
-    def sayHello_(self, sender):
+    def toggleMark_(self, sender):
         name = sender.title()[5:]
         if name in self.skipMark:
             del self.skipMark[name]
