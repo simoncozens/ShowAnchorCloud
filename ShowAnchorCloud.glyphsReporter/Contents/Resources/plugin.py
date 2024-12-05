@@ -66,6 +66,7 @@ class ShowAnchorCloud(ReporterPlugin):
                     }
                 )
         items.append({"name": "Clear all marks", "action": self.clearAll_})
+        items.append({"name": "Show all marks", "action": self.showAll_})
         return items
 
     def clearAll_(self, sender):
@@ -74,6 +75,13 @@ class ShowAnchorCloud(ReporterPlugin):
         for a in selectedAnchors:
             for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
                 self.skipMark[l2.parent.name] = True
+
+    def showAll_(self, sender):
+        layer = self.activeLayer()
+        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
+        for a in selectedAnchors:
+            for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
+                del self.skipMark[l2.parent.name]
 
     def sayHello_(self, sender):
         name = sender.title()[5:]
