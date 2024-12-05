@@ -45,7 +45,7 @@ class ShowAnchorCloud(ReporterPlugin):
         return glyphs
 
     def conditionalContextMenus(self):
-        layer = Glyphs.font.selectedLayers[0]
+        layer = self.activeLayer()
         selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
         items = []
         for a in selectedAnchors:
@@ -69,7 +69,7 @@ class ShowAnchorCloud(ReporterPlugin):
         return items
 
     def clearAll_(self, sender):
-        layer = Glyphs.font.selectedLayers[0]
+        layer = self.activeLayer()
         selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
         for a in selectedAnchors:
             for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
