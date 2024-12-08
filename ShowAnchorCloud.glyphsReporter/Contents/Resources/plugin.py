@@ -16,7 +16,28 @@ class ShowAnchorCloud(ReporterPlugin):
         self.skipMark = {}
 
     @objc.python_method
-    def matchingGlyphsAndAnchorsForAnchor(self, layer, anchor):
+    def matchingLayersAndAnchorsForSelection(self, layer):
+        selectedAnchors = [
+            (x, self.getAnchorRoot(x))
+            for x in layer.selection
+            if isinstance(x, GSAnchor)
+        ]
+        if not selectedAnchors:
+            return []
+
+        font = layer.parent.parent
+        glyphs = font.glyphs
+
+        ret = []
+        for glyph in glyphs:
+            if otherLayer := glyph.layers[layer.associatedMasterId]:
+                for anchor, anchorRoot in selectedAnchors:
+                    if otherAnchor := otherLayer.anchors[anchorRoot]:
+                        ret.append((anchor, otherLayer, otherAnchor))
+        return ret
+
+    @objc.python_method
+    def getAnchorRoot(self, anchor):
         anchorName = anchor.name
         # Skip mark anchors
         if anchorName.startswith("_"):
@@ -31,58 +52,41 @@ class ShowAnchorCloud(ReporterPlugin):
             if "." in anchorName:
                 anchorName = anchorName.split(".")[0]
         anchorRoot = "_" + anchorName
-        font = layer.parent.parent
-        allglyphs = font.glyphs
-        glyphs = []
-        for g in allglyphs:
-            if not g.layers[layer.master.id]:
-                continue
-            l2 = g.layers[layer.master.id]
-            otherAnchor = l2.anchors[anchorRoot]
-            if not otherAnchor:
-                continue
-            glyphs.append((l2, otherAnchor))
-        return glyphs
+        return anchorRoot
 
     def conditionalContextMenus(self):
         layer = self.activeLayer()
-        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
         items = []
-        for a in selectedAnchors:
-            for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
-                if l2.parent.name in self.skipMark:
-                    state = OFFSTATE
-                else:
-                    state = ONSTATE
+        for _, otherLayer, _ in self.matchingLayersAndAnchorsForSelection(layer):
+            if otherLayer.parent.name in self.skipMark:
+                state = OFFSTATE
+            else:
+                state = ONSTATE
 
-                items.append(
-                    {
-                        "name": "Show " + l2.parent.name,
-                        "state": state,
-                        "action": self.toggleMark_,
-                        # "action": objc.selector(
-                        #     lambda (self, sender): self.toggle(l2.parent.name)
-                        # ),
-                    }
-                )
+            items.append(
+                {
+                    "name": "Show " + otherLayer.parent.name,
+                    "state": state,
+                    "action": self.toggleMark_,
+                    # "action": objc.selector(
+                    #     lambda (self, sender): self.toggle(l2.parent.name)
+                    # ),
+                }
+            )
         items.append({"name": "Clear all marks", "action": self.clearAll_})
         items.append({"name": "Show all marks", "action": self.showAll_})
         return items
 
     def clearAll_(self, sender):
         layer = self.activeLayer()
-        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
-        for a in selectedAnchors:
-            for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
-                self.skipMark[l2.parent.name] = True
+        for _, otherLayer, _ in self.matchingLayersAndAnchorsForSelection(layer):
+            self.skipMark[otherLayer.parent.name] = True
         Glyphs.redraw()
 
     def showAll_(self, sender):
         layer = self.activeLayer()
-        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
-        for a in selectedAnchors:
-            for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
-                del self.skipMark[l2.parent.name]
+        for _, otherLayer, _ in self.matchingLayersAndAnchorsForSelection(layer):
+            del self.skipMark[otherLayer.parent.name]
         Glyphs.redraw()
 
     def toggleMark_(self, sender):
@@ -95,27 +99,25 @@ class ShowAnchorCloud(ReporterPlugin):
 
     @objc.python_method
     def background(self, layer):
-        selectedAnchors = filter(lambda x: isinstance(x, GSAnchor), layer.selection)
-        if not selectedAnchors:
-            return
         try:
+            matchingLayersAndAnchors = self.matchingLayersAndAnchorsForSelection(layer)
+            if not matchingLayersAndAnchors:
+                return
             NSColor.colorWithDeviceWhite_alpha_(0, 0.2).set()
-            for a in selectedAnchors:
-                for l2, otherAnchor in self.matchingGlyphsAndAnchorsForAnchor(layer, a):
-                    if l2.parent.name in self.skipMark:
-                        continue
-                    anchorAnchorPos = NSPoint(
-                        a.position.x - otherAnchor.position.x,
-                        a.position.y - otherAnchor.position.y,
-                    )
-                    bez = NSBezierPath.bezierPath()
-                    bez.appendBezierPath_(l2.completeBezierPath)
+            for anchor, otherLayer, otherAnchor in matchingLayersAndAnchors:
+                if otherLayer.parent.name in self.skipMark:
+                    continue
+                anchorAnchorPos = NSPoint(
+                    anchor.position.x - otherAnchor.position.x,
+                    anchor.position.y - otherAnchor.position.y,
+                )
+                bez = NSBezierPath.bezierPath()
+                bez.appendBezierPath_(otherLayer.completeBezierPath)
 
-                    t = NSAffineTransform.transform()
-                    t.translateXBy_yBy_(anchorAnchorPos.x, anchorAnchorPos.y)
-                    bez.transformUsingAffineTransform_(t)
-                    bez.fill()
-
+                t = NSAffineTransform.transform()
+                t.translateXBy_yBy_(anchorAnchorPos.x, anchorAnchorPos.y)
+                bez.transformUsingAffineTransform_(t)
+                bez.fill()
         except:
             print("Oops!", sys.exc_info()[0], "occured.")
             traceback.print_exc(file=sys.stdout)
