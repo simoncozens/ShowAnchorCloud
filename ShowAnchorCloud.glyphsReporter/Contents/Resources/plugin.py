@@ -17,18 +17,21 @@ class ShowAnchorCloud(ReporterPlugin):
 
     @objc.python_method
     def matchingLayersAndAnchorsForSelection(self, layer):
-        selectedAnchors = [x for x in layer.selection if isinstance(x, GSAnchor)]
+        selectedAnchors = [
+            (x, self.getAnchorRoot(x))
+            for x in layer.selection
+            if isinstance(x, GSAnchor)
+        ]
         if not selectedAnchors:
             return []
 
         font = layer.parent.parent
         glyphs = font.glyphs
-        anchors = [(anchor, self.getAnchorRoot(anchor)) for anchor in selectedAnchors]
 
         ret = []
         for glyph in glyphs:
             if otherLayer := glyph.layers[layer.associatedMasterId]:
-                for anchor, anchorRoot in anchors:
+                for anchor, anchorRoot in selectedAnchors:
                     if otherAnchor := otherLayer.anchors[anchorRoot]:
                         ret.append((anchor, otherLayer, otherAnchor))
         return ret
