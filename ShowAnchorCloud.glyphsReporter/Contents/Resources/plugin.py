@@ -32,7 +32,7 @@ class ShowAnchorCloud(ReporterPlugin):
         for glyph in glyphs:
             if otherLayer := glyph.layers[layer.associatedMasterId]:
                 for anchor, anchorRoot in selectedAnchors:
-                    if otherAnchor := otherLayer.anchors[anchorRoot]:
+                    if anchorRoot and (otherAnchor := otherLayer.anchors[anchorRoot]):
                         ret.append((anchor, otherLayer, otherAnchor))
         return ret
 
@@ -41,7 +41,7 @@ class ShowAnchorCloud(ReporterPlugin):
         anchorName = anchor.name
         # Skip mark anchors
         if anchorName.startswith("_"):
-            return []
+            return None
         # If it is a ligature anchor, remove the suffix
         if "_" in anchorName:
             anchorName = anchorName.split("_")[0]
