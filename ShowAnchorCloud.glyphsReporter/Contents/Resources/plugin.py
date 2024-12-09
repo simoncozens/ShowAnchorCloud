@@ -86,7 +86,8 @@ class ShowAnchorCloud(ReporterPlugin):
     def showAll_(self, sender):
         layer = self.activeLayer()
         for _, otherLayer, _ in self.matchingLayersAndAnchorsForSelection(layer):
-            del self.skipMark[otherLayer.parent.name]
+            if otherLayer.parent.name in self.skipMark:
+                del self.skipMark[otherLayer.parent.name]
         Glyphs.redraw()
 
     def toggleMark_(self, sender):
