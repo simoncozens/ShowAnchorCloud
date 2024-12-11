@@ -1,5 +1,5 @@
 # ShowAnchorCloud
-A [Glyphs](https://glyphsapp.com/) plugin to show anchor cloud for all marks, not just ones defined in GlyphData file.
+*View > Show Anchor Cloud* is a [Glyphs](https://glyphsapp.com/) plugin that displays a mark cloud for all glyphs which use the selected anchor, regardless of name. It also allows the user to filter which mark glyphs are displayed in the cloud.
 
 ![](ShowAnchorCloud.png)
 
@@ -18,6 +18,5 @@ Main features and differences from built-in anchor cloud support:
 The plugin should be installed using the built-in Plugin Manager, available from *Window → Plugin Manager*.
 
 ## Usage
-
 * Activate with *View → Show Anchor Cloud* to use the plugin instead of Glyphs own anchor cloud.
 * Right-click selected anchors to access the contextual menu and selectively control which marks to show in the anchor cloud.
