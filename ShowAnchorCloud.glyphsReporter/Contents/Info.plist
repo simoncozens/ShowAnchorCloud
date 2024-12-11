@@ -13,11 +13,11 @@
 	<key>CFBundleName</key>
 	<string>ShowAnchorCloud</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string> <!-- 1.0 -->
+	<string>2.0.0</string> <!-- 1.0 -->
 	<key>CFBundleVersion</key>
-	<string>123</string> <!-- 123 -->
+	<string>200</string> <!-- 123 -->
 	<key>UpdateFeedURL</key>
-	<string>____OnlineUrlToThisPlist____</string>
+	<string>https://raw.githubusercontent.com/simoncozens/ShowAnchorCloud/glyphs-3/ShowAnchorCloud.glyphsReporter/Contents/Info.plist</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Corvel Software, 2020</string>
 	<key>NSPrincipalClass</key>
